@@ -36,6 +36,7 @@ class EmailListener:
             self.PASSWORD = BuiltIn().get_variable_value("${PASSWORD}")
             self.TO = BuiltIn().get_variable_value("${TO}")
             self.CC = BuiltIn().get_variable_value("${CC}")
+            self.COMPANY_NAME = BuiltIn().get_variable_value("${COMPANY_NAME}")
 
             self.PRE_RUNNER = 1
 
@@ -58,9 +59,9 @@ class EmailListener:
 
         send_email(self.SEND_EMAIL, self.SUBJECT, self.SMPT, self.FROM, self.PASSWORD, self.TO, self.CC,
          self.total_tests, self.passed_tests, self.failed_tests, math.ceil(self.passed_tests * 100.0 / self.total_tests),
-         self.date_now, self.total_time)
+         self.date_now, self.total_time, self.COMPANY_NAME)
 
-def send_email(send_email, subject, smtp, from_user, pwd, to, cc, total, passed, failed, percentage, exe_date, elapsed_time):
+def send_email(send_email, subject, smtp, from_user, pwd, to, cc, total, passed, failed, percentage, exe_date, elapsed_time, company_name):
 
     if send_email:
         server = smtplib.SMTP(smtp)
@@ -84,74 +85,126 @@ def send_email(send_email, subject, smtp, from_user, pwd, to, cc, total, passed,
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0 " />
             <style>
-                body {
-                    background-color:#F2F2F2; 
+                .rf-box {
+                    max-width: 60%%;
+                    margin: auto;
+                    padding: 30px;
+                    border: 3px solid #eee;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, .15);
+                    font-size: 16px;
+                    line-height: 28px;
+                    font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+                    color: #555;
                 }
-                body, html, table,span,b {
-                    font-family: Courier New;
-                    font-size: 14px;
+                
+                .rf-box table {
+                    width: 100%%;
+                    line-height: inherit;
+                    text-align: left;
                 }
-                .pastdue { color: crimson; }
-                table {
-                    border: 1px solid silver;
-                    padding: 6px;
-                    margin-left: 30px;
-                    width: 300px;
-                }
-                tbody {
+                
+                .rf-box table td {
+                    padding: 5px;
+                    vertical-align: top;
+                    width: 50%%;
                     text-align: center;
                 }
-                td {
-                    height: 25px;
+                
+                .rf-box table tr.heading td {
+                    background: #eee;
+                    border-bottom: 1px solid #ddd;
+                    font-weight: bold;
+                    text-align: left;
                 }
-                .dt-buttons {
-                    margin-left: 30px;
+                
+                .rf-box table tr.item td {
+                    border-bottom: 1px solid #eee;
                 }
             </style>
         </head>
         <body>
-        <span>Hi Team,<br><br>Following are the last build execution status.<br><br>Result:<br><br></span>
-            <table>
-                <tr>
-                   <td style="background-color: #DCDCDC;text-align: center;">Total</td>
-                   <td style="text-align: center;">%s</td> 
-                </tr>
-                <tr>
-                   <td style="background-color: #DCDCDC;text-align: center;">Pass</td>
-                   <td style="text-align: center;">%s</td> 
-                </tr>
-                <tr>
-                   <td style="background-color: #DCDCDC;text-align: center;">Fail</td>
-                   <td style="text-align: center;">%s</td> 
-                </tr>
-                <tr>
-                   <td style="background-color: #DCDCDC;text-align: center;">Pass Percentage</td>
-                   <td style="text-align: center;">%s</td> 
-                </tr>
-                <tr>
-                   <td style="background-color: #DCDCDC;text-align: center;">Execution Date</td>
-                   <td style="text-align: center;">%s</td> 
-                </tr>
-                <tr>
-                   <td style="background-color: #DCDCDC;text-align: center;">Machine</td>
-                   <td style="text-align: center;">%s</td> 
-                </tr>
-                <tr>
-                   <td style="background-color: #DCDCDC;text-align: center;">OS</td>
-                   <td style="text-align: center;">%s</td> 
-                </tr>
-                <tr>
-                   <td style="background-color: #DCDCDC;text-align: center;">Duration</td>
-                   <td style="text-align: center;">%s</td> 
-                </tr>
-                </tbody>
-            </table>
 
-            
-            <span><br>Regards,<br>QA Team</span>
+            <div class="rf-box">
+                <table cellpadding="0" cellspacing="0">
+                    <tr class="top">
+                        <td colspan="2">
+                            <table>
+                                <tr>
+                                    <td></td>
+                                    <td style="text-align:middle">
+										<h1>%s</h1>
+									</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
 
-        </body></html> 
-        """ % (total, passed, failed, percentage, exe_date, platform.uname()[1], platform.uname()[0], elapsed_time)
+                <p style="padding-left:20px">
+                    Hi Team,<br>
+                    Following are the last build execution result. Please refer <a href="">report.html</a> for more info
+                </p>
+
+                <table style="width:80%%;padding-left:20px">
+                    <tr class="heading">
+                        <td>Test Status:</td>
+                        <td></td>
+                    </tr>
+                    <tr class="item">
+                        <td>Total</td>
+                        <td>%s</td>
+                    </tr>
+                    <tr class="item">
+                        <td>Pass</td>
+                        <td style="color:green">%s</td>
+                    </tr>
+                    <tr class="item">
+                        <td>Fail</td>
+                        <td style="color:red">%s</td>
+                    </tr>
+                </table>
+
+                <br>
+
+                <table style="width:80%%;padding-left:20px">
+                    <tr class="heading">
+                        <td>Other Info:</td>
+                        <td></td>
+                    </tr>
+                    <tr class="item">
+                        <td>Pass Percentage (%%)</td>
+                        <td>%s</td>
+                    </tr>
+                    <tr class="item">
+                        <td>Executed Date</td>
+                        <td>%s</td>
+                    </tr>
+                    <tr class="item">
+                        <td>Machine</td>
+                        <td>%s</td>
+                    </tr>
+                    <tr class="item">
+                        <td>OS</td>
+                        <td>%s</td>
+                    </tr>
+                    <tr class="item">
+                        <td>Duration</td>
+                        <td>%s</td>
+                    </tr>
+                </table>
+
+                <table>
+                    <tr>
+                        <td style="text-align:center;color: #999999; font-size: 11px">
+                            <p>Best viewed in websites!</p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </body>
+
+        </html>
+        """ % (company_name, total, passed, failed, percentage, exe_date, platform.uname()[1], platform.uname()[0], elapsed_time)
 
         msg.attach(MIMEText(email_content, 'html'))
 

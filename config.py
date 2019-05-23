@@ -9,9 +9,11 @@ SMPT = "smtp.gmail.com:587"
 SUBJECT = "MyProject Automation Execution Status"
 
 # credentials
-FROM = "XXXXXX@gmail.com"
-PASSWORD = "XXXXXXX"
+FROM = "XXXXX@gmail.com"
+PASSWORD = "XXXXX"
 
 # receivers
-TO = "XXXXXX@gmail.com"
+TO = "XXXXX@gmail.com"
 CC = "XXXXXX@gmail.com"
+
+COMPANY_NAME = "My Company Title"
